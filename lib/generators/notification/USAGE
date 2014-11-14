@@ -1,0 +1,8 @@
+Description:
+    Create a notification.
+
+Example:
+    rails generate notification Announcement
+
+    This will create:
+        app/notifications/announcement.rb

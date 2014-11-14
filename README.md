@@ -17,10 +17,17 @@ In the past when I've built notification systems, the meta information that that
 
 ### Setup
 
-First declare the gem and rebundle.
+First declare the gem
 
 ```ruby
 gem 'notify-engine'
+```
+
+and install:
+
+```
+bundle install
+rake db:migrate
 ```
 
 Second, declare some notifications types. Use the generator to create one, or copy and paste some simple code into your app's `app/notifications` directory.
