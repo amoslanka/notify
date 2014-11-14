@@ -16,44 +16,34 @@ In the past when I've built notification systems, the meta information that that
 
 First declare the gem and rebundle.
 
-```ruby
-gem 'notify-engine'
-```
+    gem 'notify-engine'
 
 Second, declare some notifications types. Use the generator to create one, or copy and paste some simple code into your app's `app/notifications` directory.
 
-```
-rails generate notification foo
-```
+    rails generate notification foo
 
 This creates a notification in `app/notifications` using the same name, and you should think of that name as the canonical name of this notification type.
 
-```ruby
-# app/notifications/foo.rb
+    # app/notifications/foo.rb
 
-Notify.register_notification :foo do
+    Notify.register_notification :foo do
 
-  deliver_via :email
-  retry 5
-  visible true
+      deliver_via :email
+      retry 5
+      visible true
 
-end
-```
+    end
 
 And create a foo mailer to match it (delivery methods and how to find your mailers is super simple, but described later)
 
-```ruby
-# app/views/notifications_mailer/foo.html.erb
+    # app/views/notifications_mailer/foo.html.erb
 
-<h1> Hello foo! </h1>
-```
+    <h1> Hello foo! </h1>
 
 All you have to do now is send a notification to your user.
 
-```ruby
-user = User.first
-Notify.send :foo, to: user
-```
+    user = User.first
+    Notify.send :foo, to: user
 
 Done and done.
 
