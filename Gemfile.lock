@@ -33,6 +33,10 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.1)
       tzinfo (~> 1.1)
+    ammeter (1.1.2)
+      activesupport (>= 3.0)
+      railties (>= 3.0)
+      rspec-rails (>= 2.2)
     arel (5.0.1.20140414130214)
     builder (3.2.2)
     coderay (1.1.0)
@@ -112,6 +116,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  ammeter
   factory_girl_rails
   notify!
   pry
