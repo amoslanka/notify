@@ -1,4 +1,5 @@
-= Notify
+Notify
+======
 
 You have an application that needs to talk to your users. Rendering emails and sending push notifications isn't the problem, but managing that data gets really messy.
 
@@ -12,7 +13,7 @@ In the past when I've built notification systems, the meta information that that
 
 ---
 
-=== Setup
+### Setup
 
 First declare the gem and rebundle.
 
