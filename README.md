@@ -5,8 +5,8 @@ You have an application that needs to talk to your users. Rendering emails and s
 
 Notify cleans all that up, and lets you focus on what notifications you send and the what they say.
 
-![](https://travis-ci.org/amoslanka/notify.svg)
-
+![Travis CI](https://travis-ci.org/amoslanka/notify.svg)
+[![Circle CI](https://circleci.com/gh/amoslanka/notify/tree/master.png?style=badge)](https://circleci.com/gh/amoslanka/notify/tree/master)
 ---
 
 Notify is a Rails Engine that seeks manages the data structure of your notification system and gives you a way to define what notifications you send and some rules about how or when they're sent. It doesn't deal with the views, delivery, or logic that says when to send them. Just the defined notification types and the data that links your users with things they're notified about.
