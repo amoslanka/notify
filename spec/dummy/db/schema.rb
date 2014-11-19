@@ -11,7 +11,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141114065110) do
+ActiveRecord::Schema.define(version: 20141119063650) do
+
+  create_table "notification_deliveries", force: true do |t|
+    t.integer  "receiver_id"
+    t.string   "receiver_type"
+    t.integer  "notification_id"
+    t.datetime "delivered_at"
+    t.datetime "received_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "notifications", force: true do |t|
     t.string   "type"
@@ -26,5 +36,11 @@ ActiveRecord::Schema.define(version: 20141114065110) do
 
   add_index "notifications", ["activity_type", "activity_id"], name: "index_notifications_on_activity_type_and_activity_id"
   add_index "notifications", ["type"], name: "index_notifications_on_type"
+
+  create_table "users", force: true do |t|
+    t.string   "email"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
 end

@@ -2,6 +2,8 @@ require 'rails'
 require 'active_support/dependencies'
 
 require 'notify/engine'
+require 'notify/create_deliveries'
+require 'notify/ruleset'
 require 'notify/notification_type'
 require 'notify/notification_type_dsl'
 
@@ -9,7 +11,7 @@ module Notify
 
   # The logger used by Notify
   mattr_accessor :logger
-  @@logger = Rails.logger
+  @@logger = Rails.logger || Logger.new(nil)
 
   # The list of all the notification types
   mattr_accessor :types
@@ -34,7 +36,7 @@ module Notify
   end
 
   # Finds a notification type model by the name provided.
-  def self.type name
+  def self.notification_type name
     @@types[name.to_sym]
   end
 
@@ -44,6 +46,30 @@ module Notify
     # Load all notification type configuration files
     files = @@load_paths.flatten.compact.uniq.map{ |path| Dir["#{path}/**/*.rb"] }.flatten
     files.each{ |file| load file }
+  end
+
+  # Create the specified notification to the specified receivers. This
+  # method is the central access point to sending a notification.
+  def self.create type, config={}
+    config.symbolize_keys!
+    to = config.delete(:to)
+    raise ArgumentError, "type argument is required" if type.blank?
+    raise ArgumentError, "to argument is required" if to.empty?
+
+    # Find the type
+    default_config = type.is_a?(NotificationType) ? NotificationType : notification_type(type)
+    raise ArgumentError, "could not find notification type #{type}" unless default_config
+
+    # Flatten the rules and hold them in a ruleset.
+    ruleset = default_config.ruleset.merge(config)
+
+    # Create the notification
+    notification = Notification.create! type: default_config.name, ruleset: ruleset
+
+    # Create the deliveries
+    CreateDeliveries.new.call(notification: notification, to: to)
+
+    notification
   end
 
 end

@@ -1,5 +1,14 @@
 ENV['RAILS_ENV'] ||= 'test'
-require File.expand_path("../dummy/config/environment.rb",  __FILE__)
+
+# The dummy app
+app_path = File.expand_path("../dummy", __FILE__)
+$LOAD_PATH.unshift(app_path) unless $LOAD_PATH.include?(app_path)
+require 'rails/all'
+require 'config/environment'
+require 'db/schema'
+require 'rails/test_help'
+
+# Rspec config
 require 'rspec/rails'
 require 'factory_girl_rails'
 
