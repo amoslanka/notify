@@ -1,13 +1,14 @@
 require 'rails'
 require 'active_support/dependencies'
-
 require 'notify/engine'
-require 'notify/create_deliveries'
-require 'notify/ruleset'
-require 'notify/notification_type'
-require 'notify/notification_type_dsl'
 
 module Notify
+
+  autoload :CreateDeliveries,    'notify/create_deliveries'
+  autoload :NotificationType,    'notify/notification_type'
+  autoload :NotificationTypeDsl, 'notify/notification_type_dsl'
+  autoload :Receiver,            'notify/receiver'
+  autoload :Ruleset,             'notify/ruleset'
 
   # The logger used by Notify
   mattr_accessor :logger
