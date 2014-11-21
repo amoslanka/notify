@@ -25,7 +25,7 @@ module Notify
       end
 
       translators = notification.deliver_via.collect do |name|
-        unless translator_class = find_translator_class(name)
+        unless translator_class = Notify.translator(name)
           raise TranslatorError, "Could not find a platform translator for #{name}"
         end
         translator = translator_class.new
@@ -70,16 +70,5 @@ module Notify
 
       true
     end
-
-    # Private. Finds the translator class by name. Tries a few class names
-    # the name may have been derived from.
-    private def find_translator_class(name)
-      name = name.to_s.camelize
-      "Notify::Translator::#{name}".safe_constantize ||
-      "Translator::#{name}".safe_constantize ||
-      "#{name}Translator".safe_constantize ||
-      name.safe_constantize
-    end
-
    end
 end

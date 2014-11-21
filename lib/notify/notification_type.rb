@@ -1,13 +1,35 @@
 module Notify
-  class NotificationType
+  #
+  # The base for any notification declaration. Extend this module with your
+  # notification class.
+  #
+  # Example:
+  #   class FooNotification
+  #     extend Notify::NotificationType
+  #     # ...
+  #   end
+  #
+  module NotificationType
     RULE_ATTRIBUTES = %w(deliver_via mailer visible retry)
 
-    attr_accessor :name
-    attr_accessor *RULE_ATTRIBUTES
+    # When extended, we register this type with Notify.
+    def self.extended(obj)
+      obj.class_eval do
+        class <<self
+          # Make all the rule attributes into cvars.
+          attr_accessor *RULE_ATTRIBUTES
+        end
+      end
+    end
+
+    # The identifier with which to refer to this notification. It is
+    # derived from the name of the class.
+    def id
+      self.name.demodulize.gsub(/Notification$/, '').underscore.to_sym
+    end
 
     # Validate the settings on notification type.
     def validate!
-      raise Exception, 'a name must be provided for the notification type' if @name.blank?
     end
 
     # Create a ruleset from the config options in for this type.

@@ -17,8 +17,6 @@ module Notify::Translator
     def deliver(delivery, options={})
       options.symbolize_keys!
 
-      # binding.pry
-
       # TODO: move parsing out the mailer to the NotificationType object.
       # This will give us the ability to stay out of the notif object during
       # translation, and allow us to raise an error early on if the mailer
