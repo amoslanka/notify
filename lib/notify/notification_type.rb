@@ -1,8 +1,9 @@
 module Notify
   class NotificationType
-    RULE_ATTRIBUTES = %w(deliver_via visible retry)
+    RULE_ATTRIBUTES = %w(deliver_via mailer visible retry)
 
-    attr_accessor :name, :deliver_via, :visible, :retry
+    attr_accessor :name
+    attr_accessor *RULE_ATTRIBUTES
 
     # Validate the settings on notification type.
     def validate!

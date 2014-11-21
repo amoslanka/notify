@@ -16,6 +16,8 @@ module Notify
       raise ArgumentError, 'A notification is required' if notification.blank?
       raise ArgumentError, 'A list of receivers is required' if options[:to].blank?
 
+      delivery_count = 0
+
       ActiveRecord::Base.transaction do
 
         # Loop the receivers and create a delivery.
@@ -38,10 +40,11 @@ module Notify
 
           delivery.receiver = receiver
           delivery.save!
+          delivery_count += 1
         end
       end
 
-      true
+      delivery_count
     end
 
     # Private. Loops the items in the most efficient way depending on what class

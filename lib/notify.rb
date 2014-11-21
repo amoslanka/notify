@@ -1,14 +1,17 @@
 require 'rails'
 require 'active_support/dependencies'
 require 'notify/engine'
+require 'notify/errors'
 
 module Notify
 
   autoload :CreateDeliveries,    'notify/create_deliveries'
+  autoload :ExecuteDeliveries,   'notify/execute_deliveries'
   autoload :NotificationType,    'notify/notification_type'
   autoload :NotificationTypeDsl, 'notify/notification_type_dsl'
   autoload :Receiver,            'notify/receiver'
   autoload :Ruleset,             'notify/ruleset'
+  autoload :Translator,          'notify/translator'
 
   # The logger used by Notify
   mattr_accessor :logger
@@ -16,6 +19,10 @@ module Notify
 
   # The list of all the notification types
   mattr_accessor :types
+
+  # The list of all delivery platforms
+  mattr_accessor :platforms
+  @@platforms = []
 
   # The load paths are where the notifications are stored in the app
   mattr_accessor :load_paths
@@ -41,7 +48,7 @@ module Notify
     @@types[name.to_sym]
   end
 
-  # Reloads all notification type configurations
+  # Reloads all notification type and platform configurations
   def self.reload!
     @@types = {}
     # Load all notification type configuration files
@@ -55,23 +62,42 @@ module Notify
     config.symbolize_keys!
     to = config.delete(:to)
     raise ArgumentError, "type argument is required" if type.blank?
-    raise ArgumentError, "to argument is required" if to.empty?
 
     # Find the type
-    default_config = type.is_a?(NotificationType) ? NotificationType : notification_type(type)
-    raise ArgumentError, "could not find notification type #{type}" unless default_config
+    type_config = type.is_a?(NotificationType) ? NotificationType : notification_type(type)
+    raise ArgumentError, "could not find notification type #{type}" unless type_config
 
     # Flatten the rules and hold them in a ruleset.
-    ruleset = default_config.ruleset.merge(config)
+    ruleset = type_config.ruleset.merge(config)
+
+    # TODO: make this customizeable
+    default_config = {
+      # Defaultly deliver to all platforms.
+      deliver_via: @@types.keys,
+      visible: true
+    }
+    # The baselines that we have to have but can assume standard defaults on.
+    ruleset.reverse_merge! default_config
 
     # Create the notification
-    notification = Notification.create! type: default_config.name, ruleset: ruleset
+    notification = Notification.create! type: type_config.name, ruleset: ruleset
 
     # Create the deliveries
     CreateDeliveries.new.call(notification: notification, to: to)
 
+    # Execute the deliveries
+    ExecuteDeliveries.new.call(notification: notification, ruleset: ruleset)
+
     notification
+  end
+
+  # Define a delivery platform.
+  def self.delivery_platform name
+    @@platforms << name.to_sym
+    @@platforms.uniq!
   end
 
 end
 
+
+Notify::Translator::ActionMailer

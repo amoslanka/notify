@@ -19,8 +19,17 @@ module Notify
     end
 
     # Load Notify configurations
-    initializer :load_notifications do |app|
+    initializer :notify_load_notifications do |app|
       Notify.reload!
+    end
+
+    # Initialize an delivery platform for ActionMailer
+    # The action_mailer platform is automatically created if ActionMailer
+    # is present.
+    initializer :notify_load_default_platforms do |app|
+      if defined?(ActionMailer)
+        Notify.delivery_platform :action_mailer
+      end
     end
 
   end
