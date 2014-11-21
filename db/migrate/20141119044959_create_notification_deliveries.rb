@@ -13,5 +13,8 @@ class CreateNotificationDeliveries < ActiveRecord::Migration
 
       t.timestamps
     end
+
+    add_index :notification_deliveries, :notification_id
+    add_index :notification_deliveries, [:receiver_type, :receiver_id]
   end
 end
