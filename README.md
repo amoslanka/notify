@@ -9,9 +9,9 @@ Notify cleans all that up, and lets you focus on what notifications you send and
 [![Circle CI](https://circleci.com/gh/amoslanka/notify/tree/master.png?style=badge)](https://circleci.com/gh/amoslanka/notify/tree/master)
 ---
 
-Notify is a Rails Engine that seeks manages the data structure of your notification system and gives you a way to define what notifications you send and some rules about how or when they're sent. It doesn't deal with the views, delivery, or logic that says when to send them. Just the defined notification types and the data that links your users with things they're notified about.
+Notify is a Rails Engine that seeks manages the data structure of your notification system and gives you a way to define what notifications you send and some rules about how or when they're sent. It doesn't deal with the views, delivery, or logic that says when to send them. Just the defined notification definitions and the data that links your users with things they're notified about.
 
-In the past when I've built notification systems, the meta information that that system must include can get ugly and complex real fast. The goal of this engine is to keep all that out of site, but still accessible. Meanwhile your app should only have to declare notification types, hook into how they're rendered, and say when to send them.
+In the past when I've built notification systems, the meta information that that system must include can get ugly and complex real fast. The goal of this engine is to keep all that out of sight, but still accessible. Meanwhile your app should only have to declare notification definitions and say when to send them.
 
 ---
 
@@ -36,21 +36,21 @@ Second, declare some notifications types. Use the generator to create one, or co
 rails generate notification foo
 ```
 
-This creates a notification in `app/notifications` using the same name, and you should think of that name as the canonical name of this notification type.
+This creates a notification definition in `app/notifications` using the same name, and you should think of that name as the canonical name of this notification type.
 
 ```ruby
-# app/notifications/foo.rb
+# app/notifications/foo_notification.rb
 
-Notify.register_notification :foo do
+class WelcomeNotification
+  extend Notify::NotificationType
 
-  deliver_via :email
-  retry 5
-  visible true
-
+  self.deliver_via = :action_mailer
+  self.visible = true
 end
+
 ```
 
-And create a foo mailer to match it (delivery methods and how to find your mailers is super simple, but described later)
+And create a foo mailer to match it. Out of the box, Notify will delivery notifications by way of ActionMailer. If you don't override any configurations for your notification, Notify will try to use the mailer at N`otificationsMailer#foo`.
 
 ```ruby
 # app/views/notifications_mailer/foo.html.erb
