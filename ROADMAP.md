@@ -7,6 +7,8 @@ _Not yet assigned to a release target, but ordered according to current priority
 
 **Global configuration**. Set global ruleset values and notify configurations from a global perspective.
 
+**Spec helpers**. Easy to use spec matchers to make testing easier.
+
 **Deliver later***. When using async delivery, we can also set notifications to be delivered at a specific date and time.
 
 **Presenters**. A presentor pattern to wrap deliveries in so the parent app will have an easier time working with a delivery. Could include assumptions about how to render the notification to text (specific to the specified deliver_via option).
@@ -30,6 +32,8 @@ _Not yet assigned to a release target, but ordered according to current priority
 **Send notifications to anything**. Set a notification receiver as anything, including non ActiveRecord objects. For example, if I wanted to send a notification out on a pubsub channel I would set the channel name as the receiver.
 
 **Define translators quicker**. Perhaps change translators to use a different approach, but likely just add a helper method that creates the class in memory for you. Something like `Notify.define_translator :foo do #...`
+
+**Generate Notify**. Add a generator that generates the necessities for running Notify. Initializer, receiver inclusion, etc. Could also add the option to generate the migrations in the app's migrations folder instead of the engine's.
 
 ---
 
