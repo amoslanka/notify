@@ -27,7 +27,7 @@ _Not yet assigned to a release target, but ordered according to current priority
 
 **Deactivations**. One notification can deactivate another notification when the former is received or delivered. Most useful in visible notification lists.
 
-- **Send notifications to anything**. Set a notification receiver as anything, including non ActiveRecord objects. For example, if I wanted to send a notification out on a pubsub channel I would set the channel name as the receiver.
+**Send notifications to anything**. Set a notification receiver as anything, including non ActiveRecord objects. For example, if I wanted to send a notification out on a pubsub channel I would set the channel name as the receiver.
 
 ---
 
