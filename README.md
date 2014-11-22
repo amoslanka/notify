@@ -64,7 +64,7 @@ rake db:migrate
 Second, declare some notifications. Use the generator to create one, or copy and paste some simple code into your app's `app/notifications` directory.
 
 ```
-rails generate notification foo
+rails generate notify:notification foo
 ```
 
 This creates a notification definition in `app/notifications` using the same name, and you should think of that name as the canonical name of this notification type.
@@ -103,6 +103,38 @@ Done and done.
 ### More Detail
 
 ##### Global configuration
+
+##### Generators
+
+###### Notification
+
+```
+rails g notify:notification foo
+```
+
+Generates a notification type declaration in `app/notifications`. The name
+defined here is then used when you create a notification using this configuration.
+
+For example, if you generate a notification named "announcement", you would then
+create an announcement notification by calling `Notify.create :announcement, to: User.all`
+
+###### Translator
+
+```
+rails g notify:translator foo
+```
+
+Generates a translator that will allow you to convert notification delivery data
+into an action that sends the notification by way of the service it is built for.
+
+For example, if your app sends out push notifications and you have a service object that
+handles sending a message to a particular device token, generate a translator named "push"
+and edit the generated class's `deliver` method to retrieve the device token from the
+delivery receiver, render the message of the notification, and send both to your service
+object for delivery.
+
+To automatically deliver a particular notification type through your created "push"
+translator, add it to the declaration's `deliver_via` rule: `deliver_via << :push`.
 
 ##### Declaring a notification
 

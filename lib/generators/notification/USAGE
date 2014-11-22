@@ -1,8 +1,8 @@
 Description:
-    Create a notification definition.
+    Create a notification declaration.
 
 Example:
-    rails generate notification Announcement
+    rails generate notification foo
 
     This will create:
-        app/notifications/announcement_notification.rb
+        app/notifications/foo_notification.rb
