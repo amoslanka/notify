@@ -28,6 +28,21 @@ The above features are all configurable options when declaring or sending your n
 
 - **Receipt flags**. Deliveries can be marked as received, so you know that the user has viewed the respective notification.
 - [ROADMAPPED] **Deactivations**. Send a notification that automatically deactivates another when the former is received.
+- **Send notifications to anything**. Since its your code that will be sending a notification off via your specified services, assign anything you want as the receiver of the notification.  [ROADMAPPED] You can even make something like a string a receiver. Sending a notification out on a pubsub channel? Set the channel name as the receiver.
+
+---
+
+Some keys to understanding what Notify does:
+
+- Declaring a notification means creating a configuration that will be used whenever you later send a notification of this type.
+- Notification declarations are stored in your `app/notifications` directory.
+- Creating a notification means instantiating a notification that will be delivered to one or many receivers.
+- Notify includes data models and migrations for notifications and deliveries.
+- The notification model does not contain the actual text or message you'll be sending your users, but uses a polymorphic `activity` association in order to reference a model that does. Have regular announcements that are sent out on a regular basis? Create an announcements model and pass an instance when creating the notification.
+- Rendering is all up to you. Whether you're delivering via email, push notification, or some other service, rendering the message is up to you. Notify provides patterns to follow for how to make this happen, especially since a notification should be rendered differently based on the service.
+- A notification can have one or many receivers. Associating many receivers implies that the notification will be delivered to all receivers using the same ruleset as defined by the notification declaration and in the rules provided when creating the notification.
+- The delivery model joins a notification with receivers. It also contains values specific per receiver and notification combination such as timestamps for when the notification was delivered to that receiver and when it was received.
+- A translator is a class with an instance method called `deliver` that acts as a middleman between Notify and a specific delivery service. It translates information about the notification and receiver to conform to the protocol of the service code. For example, the built in ActionMailer translator takes the delivery and calls a mailer in the standard way that mailers are used.
 
 
 
@@ -35,20 +50,18 @@ The above features are all configurable options when declaring or sending your n
 
 ### Setup
 
-First declare the gem
+First, install the engine.
 
-```ruby
+```
+# Add to Gemfile
 gem 'notify-engine'
-```
 
-and install:
-
-```
+# Then run
 bundle install
 rake db:migrate
 ```
 
-Second, declare some notifications types. Use the generator to create one, or copy and paste some simple code into your app's `app/notifications` directory.
+Second, declare some notifications. Use the generator to create one, or copy and paste some simple code into your app's `app/notifications` directory.
 
 ```
 rails generate notification foo
@@ -87,9 +100,6 @@ Done and done.
 
 ---
 
-...
-
-Though its simple up front but there's a lot more to it.
 
 
 
