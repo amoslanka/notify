@@ -5,17 +5,17 @@ _Not yet assigned to a release target, but ordered according to current priority
 
 **Async delivery**. Easily allow processing and/or delivery to happen in a worker. Could perhaps include workers for specific queue engines, requiring the user to declare configure Notify to work with it. Possible to async both delivery creation and delivery execution?
 
-**Presenters**. A presentor pattern to wrap deliveries in so the parent app will have an easier time working with a delivery. Could include assumptions about how to render the notification to text (specific to the specified deliver_via option).
+**Global configuration**. Set global ruleset values and notify configurations from a global perspective.
 
-**Visibility**. Declare whether a notification should be visible on a feed of notifications. Useful when allowing users to see a list of their notificiations.
+**Deliver later***. When using async delivery, we can also set notifications to be delivered at a specific date and time.
+
+**Presenters**. A presentor pattern to wrap deliveries in so the parent app will have an easier time working with a delivery. Could include assumptions about how to render the notification to text (specific to the specified deliver_via option).
 
 **Expirations**. Set an expiration date on a message to make it no longer visible or valid.
 
 **Retries**. Retry failed deliveries x times before giving up.
 
 **Policies**. A policy document with a single method that further defines delivery rules or modes for a specific user. Useful for translating user preferences into Notify behaviors, such as if a user preference states they wish to not receive any notifications. In such a case, the notification and delivery are still created, but not passed on to the translator.
-
-**Deliver later***. When using async delivery, we can also set notifications to be delivered at a specific date and time.
 
 **Bundled delivery**. Bundle multiple notifications into a single delivery, configurable per delivery platform.
 
@@ -28,6 +28,8 @@ _Not yet assigned to a release target, but ordered according to current priority
 **Deactivations**. One notification can deactivate another notification when the former is received or delivered. Most useful in visible notification lists.
 
 **Send notifications to anything**. Set a notification receiver as anything, including non ActiveRecord objects. For example, if I wanted to send a notification out on a pubsub channel I would set the channel name as the receiver.
+
+**Define translators quicker**. Perhaps change translators to use a different approach, but likely just add a helper method that creates the class in memory for you. Something like `Notify.define_translator :foo do #...`
 
 ---
 
