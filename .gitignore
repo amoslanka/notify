@@ -9,4 +9,3 @@ spec/dummy/.sass-cache
 .tmp
 
 app/notifications
-.rspec
