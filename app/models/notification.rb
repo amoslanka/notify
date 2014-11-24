@@ -3,6 +3,7 @@ class Notification < ActiveRecord::Base
   self.inheritance_column = :_disabled
 
   has_many :deliveries
+  belongs_to :activity, polymorphic: true
 
   validates_presence_of :type
 

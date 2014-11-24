@@ -9,7 +9,7 @@ _Not yet assigned to a release target, but ordered according to current priority
 
 **Spec helpers**. Easy to use spec matchers to make testing easier.
 
-**Deliver later***. When using async delivery, we can also set notifications to be delivered at a specific date and time.
+**Deliver later**. When using async delivery, we can also set notifications to be delivered at a specific date and time.
 
 **Presenters**. A presentor pattern to wrap deliveries in so the parent app will have an easier time working with a delivery. Could include assumptions about how to render the notification to text (specific to the specified deliver_via option).
 
