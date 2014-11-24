@@ -3,7 +3,7 @@ Notify
 
 You have an application that needs to talk to your users. Rendering emails and sending push notifications isn't the problem, but managing that data gets really messy.
 
-Notify cleans all that up, and lets you focus on what notifications you send and the what they say.
+Notify cleans all that up, and lets you focus on what notifications to send and what they say.
 
 ![Travis CI](https://travis-ci.org/amoslanka/notify.svg)
 [![Circle CI](https://circleci.com/gh/amoslanka/notify/tree/master.png?style=badge)](https://circleci.com/gh/amoslanka/notify/tree/master)
