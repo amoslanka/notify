@@ -4,13 +4,16 @@ module Notify
   describe NotificationType do
     let(:config) { NotificationType.new }
 
+    subject { class ::FooNotification; extend NotificationType; end }
+    after { Object.send(:remove_const, :FooNotification) if Object.constants.include?(:FooNotification) }
+
     describe 'validation' do
+    end
 
-      it 'validates that a name is provided' do
-        config.name = nil
-        expect{ config.validate! }.to raise_error
+    describe '.id' do
+      it 'removes "Notification" from the classname' do
+        expect(subject.id.to_sym).to eq :foo
       end
-
     end
 
     describe '#ruleset' do
