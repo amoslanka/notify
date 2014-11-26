@@ -1,4 +1,4 @@
-module Notify::Translator
+module Notify::Adapter
 
   #
   # Platform options
@@ -11,7 +11,7 @@ module Notify::Translator
   #                - "foo#bar". Calls: FooMailer.bar
   class ActionMailer
 
-    # TODO: switch delivery translators to receive the user and the notification
+    # TODO: switch service adapters to receive the user and the notification
     # (or a presenter) instead of the delivery object.
 
     def deliver(delivery, options={})
@@ -19,8 +19,9 @@ module Notify::Translator
 
       # TODO: move parsing out the mailer to the NotificationType object.
       # This will give us the ability to stay out of the notif object during
-      # translation, and allow us to raise an error early on if the mailer
+      # adaptation, and allow us to raise an error early on if the mailer
       # doesn't exist.
+
       method_name = nil
       mailer = case options[:mailer]
       when Class then options[:mailer]
@@ -29,7 +30,7 @@ module Notify::Translator
         method_name = segments[1]
         mailer_class(segments[0])
       else
-        raise TranslatorError, "#{options[:mailer]} is not a valid mailer"
+        raise AdapterError, "#{options[:mailer]} is not a valid mailer"
       end
 
       method_name ||= delivery.notification.type

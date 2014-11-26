@@ -13,7 +13,7 @@ Notify is a Rails Engine that seeks to manage the data structure of your notific
 
 In most notification systems built for rails applications, the meta information that that system must include can get ugly and complex real fast. The goal of this engine is to keep all that out of sight, but still accessible. Meanwhile your app should only have to declare notification types and say when to send them. All those extra rules and configurations are managed from a few single points of contact. The following features are configurable globally, per notification type, or per notification:
 
-- **Send it anywhere**. Deliver notifications through as many services as you wish. Defining new translators for any kind of delivery service is simple, and declaring which service to deliver through is even easier. A translator for ActionMailer is provided and activated by default, so if email is your only platform, you're already done.
+- **Send it anywhere**. Deliver notifications through as many services as you wish. Defining new adapters for any kind of delivery service is simple, and declaring which service to deliver through is even easier. A adapter for ActionMailer is provided and activated by default, so if email is your only platform, you're already done.
 - [ROADMAPPED] **Visibility**. Declare whether a notification should be visible on a feed of notifications. Its common to allow your users to see a list of their notificiations. Notify provides well presented access to visible notifications making it easy to render them in your app.
 - [ROADMAPPED] **Expirations**. Set an expiration date on a message to make it no longer visible or valid.
 - [ROADMAPPED] **Retries**. Using external services can often result in unexpected failures due to outages on services you don't control. Retry the deliveries as many times as you like.
@@ -43,7 +43,7 @@ Some keys to understanding what Notify does:
 - Rendering is all up to you. Whether you're delivering via email, push notification, or some other service, rendering the message is up to you. Notify provides patterns to follow for how to make this happen, especially since a notification should be rendered differently based on the service.
 - A notification can have one or many receivers. Associating many receivers implies that the notification will be delivered to all receivers using the same ruleset as defined by the notification declaration and in the rules provided when creating the notification.
 - The delivery model joins a notification with receivers. It also contains values specific per receiver and notification combination such as timestamps for when the notification was delivered to that receiver and when it was received.
-- A translator is a class with an instance method called `deliver` that acts as a middleman between Notify and a specific delivery service. It translates information about the notification and receiver to conform to the protocol of the service code. For example, the built in ActionMailer translator takes the delivery and calls a mailer in the standard way that mailers are used.
+- An adapter is a class with an instance method called `deliver` that acts as a middleman between Notify and a specific delivery service. It adapts information about the notification and receiver to conform to the protocol of the service code. For example, the built in ActionMailer adapter takes the delivery and calls a mailer in the standard way that mailers are used.
 - A ruleset is basically just a hash containing the configuration values for a specific notification.
 
 ---
@@ -118,23 +118,23 @@ defined here is then used when you create a notification using this configuratio
 For example, if you generate a notification named "announcement", you would then
 create an announcement notification by calling `Notify.create :announcement, to: User.all`
 
-###### Translator
+###### Adapter
 
 ```
-rails g notify:translator foo
+rails g notify:adapter foo
 ```
 
-Generates a translator that will allow you to convert notification delivery data
+Generates a adapter that will allow you to convert notification delivery data
 into an action that sends the notification by way of the service it is built for.
 
 For example, if your app sends out push notifications and you have a service object that
-handles sending a message to a particular device token, generate a translator named "push"
+handles sending a message to a particular device token, generate a adapter named "push"
 and edit the generated class's `deliver` method to retrieve the device token from the
 delivery receiver, render the message of the notification, and send both to your service
 object for delivery.
 
 To automatically deliver a particular notification type through your created "push"
-translator, add it to the declaration's `deliver_via` rule: `deliver_via << :push`.
+adapter, add it to the declaration's `deliver_via` rule: `deliver_via << :push`.
 
 ##### Declaring a notification
 
@@ -142,7 +142,7 @@ translator, add it to the declaration's `deliver_via` rule: `deliver_via << :pus
 
 ##### Helpers for your receiver classes
 
-##### Deliver to multiple services by defining translators
+##### Deliver to multiple services by defining adapters
 
 ##### Retrieve a receiver's notifications
 

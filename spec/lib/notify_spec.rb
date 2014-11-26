@@ -26,25 +26,25 @@ module Notify
       end
     end
 
-    describe '.translator' do
-      it 'safely return nil if no translator is found' do
-        expect(Notify.translator(:foo)).to be_nil
+    describe '.adapter' do
+      it 'safely return nil if no adapter is found' do
+        expect(Notify.adapter(:foo)).to be_nil
       end
 
-      it 'finds a translator class at Notify::Translator::Foo' do
-        class ::Notify::Translator::Foo; end;
-        expect(Notify.translator :foo).to eq ::Notify::Translator::Foo
+      it 'finds a adapter class at Notify::Adapter::Foo' do
+        class ::Notify::Adapter::Foo; end;
+        expect(Notify.adapter :foo).to eq ::Notify::Adapter::Foo
       end
 
-      it 'finds a translator class at FooTranslator' do
-        class ::FooTranslator; end;
-        expect(Notify.translator :foo).to eq ::FooTranslator
+      it 'finds a adapter class at FooAdapter' do
+        class ::FooAdapter; end;
+        expect(Notify.adapter :foo).to eq ::FooAdapter
       end
 
       after do
-        # Remove the fake translators we created.
-        Object.send(:remove_const, :FooTranslator) if Object.constants.include?(:FooTranslator)
-        Notify::Translator.send(:remove_const, :Foo) if Notify::Translator.constants.include?(:Foo)
+        # Remove the fake adapters we created.
+        Object.send(:remove_const, :FooAdapter) if Object.constants.include?(:FooAdapter)
+        Notify::Adapter.send(:remove_const, :Foo) if Notify::Adapter.constants.include?(:Foo)
       end
     end
 

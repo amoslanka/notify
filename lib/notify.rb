@@ -10,7 +10,7 @@ module Notify
   autoload :NotificationType,    'notify/notification_type'
   autoload :Receiver,            'notify/receiver'
   autoload :Ruleset,             'notify/ruleset'
-  autoload :Translator,          'notify/translator'
+  autoload :Adapter,             'notify/adapter'
 
   # The logger used by Notify
   mattr_accessor :logger
@@ -39,24 +39,24 @@ module Notify
   end
 
   #
-  # Finds a translator class by name. Tries a few class names the name may have been
+  # Finds a adapter class by name. Tries a few class names the name may have been
   # derived from. Expects the class to already be loaded or autoloadable. Accepts a
   # submoduled name as well using slash syntax.
   #
   # Examples:
-  #   Notify.translator :foo
-  #   # Will attempt to load Notify::Translator::Foo
-  #   #                   or FooTranslator
+  #   Notify.adapter :foo
+  #   # Will attempt to load Notify::Adapter::Foo
+  #   #                   or FooAdapter
   #
-  #   Notify.translator 'foo/bar'
-  #   # Will attempt to load Notify::Translator::Foo::Bar
-  #   #                   or Foo::BarTranslator
+  #   Notify.adapter 'foo/bar'
+  #   # Will attempt to load Notify::Adapter::Foo::Bar
+  #   #                   or Foo::BarAdapter
   #
   # Returns the notification class or nil if the class is not found.
-  def self.translator(name)
+  def self.adapter(name)
     name = name.to_s.camelize
-    "Notify::Translator::#{name}".safe_constantize ||
-    "#{name}Translator".safe_constantize
+    "Notify::Adapter::#{name}".safe_constantize ||
+    "#{name}Adapter".safe_constantize
   end
 
   ###

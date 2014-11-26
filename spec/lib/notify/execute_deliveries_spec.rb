@@ -12,14 +12,14 @@ module Notify
 
     context 'if the notification has no delivery platforms listed' do
       before { allow(notification).to receive(:deliver_via).and_return [] }
-      it { expect{ subject }.to raise_error TranslatorError }
+      it { expect{ subject }.to raise_error AdapterError }
     end
 
     # context 'if the notification\'s specified platform is not in the list of registered platforms'
 
     context 'if the notification\'s specified platform cannot be found' do
       before { allow(notification).to receive(:deliver_via).and_return ['this_should_not_exist'] }
-      it { expect{ subject }.to raise_error TranslatorError }
+      it { expect{ subject }.to raise_error AdapterError }
     end
 
     it 'delivers each delivery' do
