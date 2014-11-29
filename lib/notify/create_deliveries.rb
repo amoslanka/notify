@@ -5,15 +5,15 @@ module Notify
   class CreateDeliveries
 
     # Options
-    #   notification - Required. The notification instance.
-    #   to           - Required. The list of receivers or an instance of one. Most
-    #                  efficient if passed as an ActiveRecord::Relation object.
+    #   message - Required. The message instance.
+    #   to      - Required. The list of receivers or an instance of one. Most
+    #             efficient if passed as an ActiveRecord::Relation object.
     #
     # Any error raised while creating deliveries will be allowed to bubble up.
     def call options={}
       options.symbolize_keys!
-      notification = options.delete :notification
-      raise ArgumentError, 'A notification is required' if notification.blank?
+      message = options.delete :message
+      raise ArgumentError, 'A message is required' if message.blank?
       raise ArgumentError, 'A list of receivers is required' if options[:to].blank?
 
       delivery_count = 0
@@ -22,7 +22,7 @@ module Notify
 
         # Loop the receivers and create a delivery.
         each options[:to] do |receiver|
-          delivery = Notification::Delivery.new notification: notification
+          delivery = Delivery.new message: message
 
           # ! This doesn't always have to stay this way, but for now we're only
           # ! going to associate notifications to ActiveRecord objects.
@@ -31,6 +31,10 @@ module Notify
           # implementer would like to assume that notifying a string assumes that
           # that string is the name of a pubsub channel.
           unless receiver.is_a? ::ActiveRecord::Base
+
+            # TODO: raise its own error instead, or keep track on a separate object,
+            # so that validation errors can be untouched, left for end users.
+
             delivery.errors.add :receiver, "must be an ActiveRecord::Base instance"
             raise ::ActiveRecord::RecordInvalid, delivery
           end

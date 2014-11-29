@@ -69,14 +69,14 @@ module Notify
 
       it 'creates a notification' do
         allow_any_instance_of(ExecuteDeliveries).to receive(:call).and_return true
-        expect{ subject }.to change(Notification, :count).by 1
+        expect{ subject }.to change(Message, :count).by 1
       end
 
       describe 'the created notification' do
         before { allow_any_instance_of(ExecuteDeliveries).to receive(:call).and_return true }
 
         it 'is returned' do
-          expect(subject).to be_a_kind_of Notification
+          expect(subject).to be_a_kind_of Message
         end
 
         it 'is persisted' do
@@ -90,7 +90,7 @@ module Notify
         receivers.push *FactoryGirl.create_list(:receiver, 2)
         expect(receivers.count).to eq 3
         expect{ Notify.create :foo, to: receivers }.
-          to change(Notification::Delivery, :count).by 3
+          to change(Notify::Delivery, :count).by 3
       end
 
       it 'runs deliveries' do

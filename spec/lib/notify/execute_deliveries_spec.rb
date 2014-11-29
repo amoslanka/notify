@@ -2,23 +2,23 @@ require 'spec_helper'
 
 module Notify
   describe CreateDeliveries do
-    let(:notification) { FactoryGirl.create(:delivery).notification }
-    subject { ExecuteDeliveries.new.call(notification: notification) }
+    let(:message) { FactoryGirl.create(:delivery).message }
+    subject { ExecuteDeliveries.new.call(message: message) }
 
-    context 'if notification is nil' do
-      subject { ExecuteDeliveries.new.call(notification: nil) }
+    context 'if message is nil' do
+      subject { ExecuteDeliveries.new.call(message: nil) }
       it { expect{ subject }.to raise_error ArgumentError }
     end
 
-    context 'if the notification has no delivery platforms listed' do
-      before { allow(notification).to receive(:deliver_via).and_return [] }
+    context 'if the message has no delivery platforms listed' do
+      before { allow(message).to receive(:deliver_via).and_return [] }
       it { expect{ subject }.to raise_error AdapterError }
     end
 
-    # context 'if the notification\'s specified platform is not in the list of registered platforms'
+    # context 'if the message\'s specified platform is not in the list of registered platforms'
 
-    context 'if the notification\'s specified platform cannot be found' do
-      before { allow(notification).to receive(:deliver_via).and_return ['this_should_not_exist'] }
+    context 'if the message\'s specified platform cannot be found' do
+      before { allow(message).to receive(:deliver_via).and_return ['this_should_not_exist'] }
       it { expect{ subject }.to raise_error AdapterError }
     end
 

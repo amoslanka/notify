@@ -91,7 +91,7 @@ module Notify
     to = config.delete(:to)
     raise ArgumentError, "strategy argument is required" if strategy_id.blank?
 
-    # Find the notification configuration.
+    # Find the strategy.
     strategy_class = strategy_id.is_a?(Strategy) ? Strategy : strategy(strategy_id)
     raise ArgumentError, "could not find a notification strategy for #{strategy_id}" unless strategy_class
 
@@ -104,16 +104,16 @@ module Notify
     # Flatten the rules and hold them in a ruleset.
     ruleset = global_strategy.merge(strategy_class.ruleset).merge(config)
 
-    # Create the notification
-    notification = Notification.create! strategy: strategy_class.id, ruleset: ruleset, activity: activity
+    # Create the message
+    message = Message.create! strategy: strategy_class.id, ruleset: ruleset, activity: activity
 
     # Create the deliveries
-    CreateDeliveries.new.call(notification: notification, to: to)
+    CreateDeliveries.new.call(message: message, to: to)
 
     # Execute the deliveries
-    ExecuteDeliveries.new.call(notification: notification, ruleset: ruleset)
+    ExecuteDeliveries.new.call(message: message, ruleset: ruleset)
 
-    notification
+    message
   end
 
   def self.global_strategy

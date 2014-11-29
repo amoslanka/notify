@@ -1,5 +1,5 @@
 FactoryGirl.define do
-  factory :notification do
+  factory :message, class: Notify::Message do
     strategy :foo
     deliver_via [:action_mailer]
   end

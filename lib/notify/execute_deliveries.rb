@@ -4,7 +4,7 @@ module Notify
   class ExecuteDeliveries
 
     # Options
-    #   notification - Required. The notification instance.
+    #   message - Required. The message instance.
     #   ruleset - Optional. A ruleset containing delivery options to be passed
     #             on to the service adapters.
     #
@@ -15,16 +15,16 @@ module Notify
     #   - built in adaptation for background queueing
     def call options={}
       options.symbolize_keys!
-      notification = options.delete :notification
+      message = options.delete :message
       ruleset = options.delete(:ruleset) || {}
 
-      raise ArgumentError, 'A notification is required' if notification.blank?
+      raise ArgumentError, 'A message is required' if message.blank?
 
-      if notification.deliver_via.empty?
-        raise AdapterError, "The given notification has no delivery platforms"
+      if message.deliver_via.empty?
+        raise AdapterError, "The given message has no delivery platforms"
       end
 
-      adapters = notification.deliver_via.collect do |name|
+      adapters = message.deliver_via.collect do |name|
         unless adapter_class = Notify.adapter(name)
           raise AdapterError, "Could not find a platform adapter for #{name}"
         end
@@ -37,7 +37,7 @@ module Notify
       adapters = adapters.to_h
 
       # Deliver to each person on each platform.
-      notification.deliveries.find_each do |delivery|
+      message.deliveries.find_each do |delivery|
 
         # TODO
         # What to do if 1 adapter succeeds but the others dont?
@@ -57,7 +57,7 @@ module Notify
             # we should only be rescuring certain types of errors
 
             failures[adapter] = e
-            Notify.logger.warn "Adapter failed to deliver notification. adapter=#{adapter_name} notification_id=#{notification.id} delivery_id=#{delivery.id}"
+            Notify.logger.warn "Adapter failed to deliver message. adapter=#{adapter_name} message_id=#{message.id} delivery_id=#{delivery.id}"
           end
         end
 

@@ -5,7 +5,7 @@ module Notify
     let(:receivers) { FactoryGirl.create_list :receiver, 1 }
     let(:options) do
       {
-        notification: FactoryGirl.create(:notification),
+        message: FactoryGirl.create(:message),
         to: receivers
       }
     end
@@ -14,7 +14,7 @@ module Notify
     it 'creates a delivery object for each item in the receiver list' do
       receivers << FactoryGirl.create(:receiver)
       expect(receivers.count).to eq 2
-      expect{ subject }.to change(Notification::Delivery, :count).by 2
+      expect{ subject }.to change(Notify::Delivery, :count).by 2
     end
 
     describe 'the receiver list' do
@@ -45,8 +45,8 @@ module Notify
       expect{ subject }.to raise_error ArgumentError
     end
 
-    it 'requires the notification option' do
-      options[:notification] = nil
+    it 'requires the message option' do
+      options[:message] = nil
       expect{ subject }.to raise_error ArgumentError
     end
 
