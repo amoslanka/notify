@@ -5,14 +5,14 @@ module Notify
   #
   # Example:
   #   class FooNotification
-  #     extend Notify::NotificationType
+  #     extend Notify::Strategy
   #     # ...
   #   end
   #
-  module NotificationType
+  module Strategy
     RULE_ATTRIBUTES = %w(deliver_via mailer visible retry)
 
-    # When extended, we register this type with Notify.
+    # When extended, we register this notification with Notify.
     def self.extended(obj)
       obj.class_eval do
         class <<self
@@ -28,13 +28,13 @@ module Notify
       self.name.demodulize.gsub(/Notification$/, '').underscore.to_sym
     end
 
-    # Validate the settings on notification type.
+    # Validate the strategy settings.
     def validate!
     end
 
-    # Create a ruleset from the config options in for this type.
+    # Create a ruleset from the config options in for this strategy.
     # Creates a new instance on every request to avoid unintentionally
-    # writing rules to the global config for this type.
+    # writing rules to the global config for this strategy.
     def ruleset
       Ruleset.new RULE_ATTRIBUTES.collect{ |r| [r, self.send(r)] }.to_h
     end

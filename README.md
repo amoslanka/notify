@@ -9,9 +9,9 @@ Notify cleans all that up, and lets you focus on what notifications to send and 
 [![Circle CI](https://circleci.com/gh/amoslanka/notify/tree/master.png?style=badge)](https://circleci.com/gh/amoslanka/notify/tree/master)
 ---
 
-Notify is a Rails Engine that seeks to manage the data structure of your notification system and gives you a way to define what notifications you send and some rules about how or when they're sent. It doesn't deal with the views, delivery, or logic that says when to send them. It provides notification type declarations and manages the data that links your users with things they're notified about.
+Notify is a Rails Engine that seeks to manage the data structure of your notification system and gives you a way to define what notifications you send and some rules about how or when they're sent. It doesn't deal with the views, delivery, or logic that says when to send them. It provides notification strategy declarations and manages the data that links your users with things they're notified about.
 
-In most notification systems built for rails applications, the meta information that that system must include can get ugly and complex real fast. The goal of this engine is to keep all that out of sight, but still accessible. Meanwhile your app should only have to declare notification types and say when to send them. All those extra rules and configurations are managed from a few single points of contact. The following features are configurable globally, per notification type, or per notification:
+In most notification systems built for rails applications, the meta information that that system must include can get ugly and complex real fast. The goal of this engine is to keep all that out of sight, but still accessible. Meanwhile your app should only have to declare notification strategies and say when to send them. All those extra rules and configurations are managed from a few single points of contact. The following features are configurable globally, per notification strategy, or per message:
 
 - **Send it anywhere**. Deliver notifications through as many services as you wish. Defining new adapters for any kind of delivery service is simple, and declaring which service to deliver through is even easier. A adapter for ActionMailer is provided and activated by default, so if email is your only platform, you're already done.
 - [ROADMAPPED] **Visibility**. Declare whether a notification should be visible on a feed of notifications. Its common to allow your users to see a list of their notificiations. Notify provides well presented access to visible notifications making it easy to render them in your app.
@@ -35,15 +35,15 @@ The above features are all configurable options when declaring or sending your n
 
 Some keys to understanding what Notify does:
 
-- Declaring a notification means creating a configuration that will be used whenever you later send a notification of this type.
-- Notification declarations are stored in your `app/notifications` directory.
-- Creating a notification means instantiating a notification that will be delivered to one or many receivers.
-- Notify includes data models and migrations for notifications and deliveries.
-- The notification model does not contain the actual text or message you'll be sending your users, but uses a polymorphic `activity` association in order to reference a model that does. Have regular announcements that are sent out on a regular basis? Create an announcements model and pass an instance when creating the notification.
-- Rendering is all up to you. Whether you're delivering via email, push notification, or some other service, rendering the message is up to you. Notify provides patterns to follow for how to make this happen, especially since a notification should be rendered differently based on the service.
-- A notification can have one or many receivers. Associating many receivers implies that the notification will be delivered to all receivers using the same ruleset as defined by the notification declaration and in the rules provided when creating the notification.
-- The delivery model joins a notification with receivers. It also contains values specific per receiver and notification combination such as timestamps for when the notification was delivered to that receiver and when it was received.
-- An adapter is a class with an instance method called `deliver` that acts as a middleman between Notify and a specific delivery service. It adapts information about the notification and receiver to conform to the protocol of the service code. For example, the built in ActionMailer adapter takes the delivery and calls a mailer in the standard way that mailers are used.
+- A notification strategy, or often just referred to as a notification, is creating a blueprint for messages that you will send out. The strategy refers to the set of rules and configurations that will be applied to the message, unless they are overridden when created.
+- Notification strategies are stored in your `app/notifications` directory.
+- Creating a notification means specifying a strategy and configurations to use, and letting Notify create the models it uses to connect your receivers with the message.
+- Notify includes data models and migrations for messages and deliveries.
+- The message model does not contain the actual text or message you'll be sending your users, but uses a polymorphic `activity` association in order to reference a model that does. Have regular announcements that are sent out on a regular basis? Create an announcements model and pass an instance when creating the notification.
+- Rendering is all up to you. Whether you're delivering via email, push notification, or some other service, rendering the message is up to you. Notify provides patterns to follow for how to make this happen, especially since a message should be rendered differently based on the service.
+- A message can have one or many receivers. Associating many receivers implies that the notification will be delivered to all receivers using the same ruleset as defined by the strategy used and in the rules provided when creating it.
+- The delivery model joins a message with receivers. It also contains values specific per receiver and message combination such as timestamps for when the message was delivered to that receiver and when it was received.
+- An adapter is a class with an instance method called `deliver` that acts as a middleman between Notify and a specific delivery service. It adapts information about the message and receiver to conform to the protocol of the service code. For example, the built in ActionMailer adapter takes the delivery and calls a mailer in the standard way that mailers are used.
 - A ruleset is basically just a hash containing the configuration values for a specific notification.
 
 ---
@@ -61,19 +61,19 @@ bundle install
 rake db:migrate
 ```
 
-Second, declare some notifications. Use the generator to create one, or copy and paste some simple code into your app's `app/notifications` directory.
+Second, declare some notification strategies. Use the generator to create one, or copy and paste some simple code into your app's `app/notifications` directory.
 
 ```
 rails generate notify:notification foo
 ```
 
-This creates a notification definition in `app/notifications` using the same name, and you should think of that name as the canonical name of this notification type.
+This creates a notification definition in `app/notifications` using the same name, and you should think of that name as the canonical name of this strategy.
 
 ```ruby
 # app/notifications/foo_notification.rb
 
 class WelcomeNotification
-  extend Notify::NotificationType
+  extend Notify::Strategy
 
   self.deliver_via = :action_mailer
   self.visible = true
@@ -81,7 +81,7 @@ end
 
 ```
 
-And create a foo mailer to match it. Out of the box, Notify will delivery notifications by way of ActionMailer. If you don't override any configurations for your notification, Notify will try to use the mailer at N`otificationsMailer#foo`.
+And create a foo mailer to match it. Out of the box, Notify will delivery messages by way of ActionMailer. If you don't override any configurations for your notification, Notify will try to use the mailer at N`otificationsMailer#foo`.
 
 ```ruby
 # app/views/notifications_mailer/foo.html.erb
@@ -89,7 +89,7 @@ And create a foo mailer to match it. Out of the box, Notify will delivery notifi
 <h1> Hello foo! </h1>
 ```
 
-All you have to do now is send a notification to your user.
+All you have to do now is send a message to your user.
 
 ```ruby
 user = User.first
@@ -112,8 +112,8 @@ Done and done.
 rails g notify:notification foo
 ```
 
-Generates a notification type declaration in `app/notifications`. The name
-defined here is then used when you create a notification using this configuration.
+Generates a notification strategy file in `app/notifications`. The name defined here is
+then used when you create a notification using this configuration.
 
 For example, if you generate a notification named "announcement", you would then
 create an announcement notification by calling `Notify.create :announcement, to: User.all`
@@ -133,10 +133,10 @@ and edit the generated class's `deliver` method to retrieve the device token fro
 delivery receiver, render the message of the notification, and send both to your service
 object for delivery.
 
-To automatically deliver a particular notification type through your created "push"
+To automatically deliver a particular notification through your created "push"
 adapter, add it to the declaration's `deliver_via` rule: `deliver_via << :push`.
 
-##### Declaring a notification
+##### Creating a notification strategy
 
 ##### Creating a notification
 
@@ -146,7 +146,7 @@ adapter, add it to the declaration's `deliver_via` rule: `deliver_via << :push`.
 
 ##### Retrieve a receiver's notifications
 
-##### Mark notifications as received by a receiver
+##### Mark messages as received by a receiver
 
 ##### Delivery failure and safety mechanisms
 

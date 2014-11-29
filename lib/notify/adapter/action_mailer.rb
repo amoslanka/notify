@@ -7,7 +7,7 @@ module Notify::Adapter
   #              necessary. Similar to Rails routing, the action can also be specified
   #              using a hash to separate the mailer name from the mailer method.
   #              Examples:
-  #                - "foo". Calls: FooMailer.<notification type name>
+  #                - "foo". Calls: FooMailer.<strategy name>
   #                - "foo#bar". Calls: FooMailer.bar
   class ActionMailer
 
@@ -17,7 +17,7 @@ module Notify::Adapter
     def deliver(delivery, options={})
       options.symbolize_keys!
 
-      # TODO: move parsing out the mailer to the NotificationType object.
+      # TODO: move parsing out the mailer to the Strategy object.
       # This will give us the ability to stay out of the notif object during
       # adaptation, and allow us to raise an error early on if the mailer
       # doesn't exist.
@@ -33,7 +33,7 @@ module Notify::Adapter
         raise AdapterError, "#{options[:mailer]} is not a valid mailer"
       end
 
-      method_name ||= delivery.notification.type
+      method_name ||= delivery.notification.strategy
       mail = mailer.send method_name, delivery.receiver, delivery.notification
 
       mail.deliver!

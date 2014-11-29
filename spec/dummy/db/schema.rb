@@ -24,7 +24,7 @@ ActiveRecord::Schema.define(version: 20141119063650) do
   end
 
   create_table "notifications", force: true do |t|
-    t.string   "type"
+    t.string   "strategy"
     t.integer  "activity_id"
     t.string   "activity_type"
     t.string   "deliver_via"
@@ -35,7 +35,7 @@ ActiveRecord::Schema.define(version: 20141119063650) do
   end
 
   add_index "notifications", ["activity_type", "activity_id"], name: "index_notifications_on_activity_type_and_activity_id"
-  add_index "notifications", ["type"], name: "index_notifications_on_type"
+  add_index "notifications", ["strategy"], name: "index_notifications_on_strategy"
 
   create_table "users", force: true do |t|
     t.string   "email"

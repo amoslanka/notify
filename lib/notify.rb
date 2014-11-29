@@ -7,7 +7,7 @@ module Notify
 
   autoload :CreateDeliveries,    'notify/create_deliveries'
   autoload :ExecuteDeliveries,   'notify/execute_deliveries'
-  autoload :NotificationType,    'notify/notification_type'
+  autoload :Strategy,            'notify/strategy'
   autoload :Receiver,            'notify/receiver'
   autoload :Ruleset,             'notify/ruleset'
   autoload :Adapter,             'notify/adapter'
@@ -21,19 +21,19 @@ module Notify
   ###
 
   #
-  # Finds a notification type model by the name provided. Expects the notification
+  # Finds a notification strategy model by the name provided. Expects the notification
   # class to already be loaded or to be autoloadable. Accepts a submoduled name as
   # well using slash syntax.
   #
   # Examples:
-  #   Notify.notification_type :foo
+  #   Notify.strategy :foo
   #   # Will attempt to load FooNotification
   #
-  #   Notify.notification_type 'foo/bar'
+  #   Notify.strategy 'foo/bar'
   #   # Will attempt to load Foo::BarNotification
   #
   # Returns the notification class or nil if the class is not found.
-  def self.notification_type name
+  def self.strategy name
     name = name.to_s.classify
     "#{name}Notification".safe_constantize
   end
@@ -64,11 +64,12 @@ module Notify
   ###
 
   #
-  # Create the specified notification type to the specified receivers. This
-  # method is the central access point to sending a notification. Three layers
-  # of rulesets are merged together here to finalize the ruleset to be used
-  # for the created notification, in order of highest priority: immediate config
-  # defined in the call to create, notification type config, global default config.
+  # Create a message using the specified notification strategy and deliver it to
+  # the specified receivers. This method is the central access point to sending
+  # a notification. Three layers of rulesets are merged together here to finalize
+  # the ruleset to be used for the created notification, in order of highest
+  # priority: immediate strategy defined in the call to create, notification
+  # strategy file, global default strategy.
   #
   # Options:
   #
@@ -85,14 +86,14 @@ module Notify
   # See `Notification::RULESET_ATTRIBUTES`. Any standard ruleset attribute can be passed as
   # a an option and will take precedence over all other ruleset configurations.
   #
-  def self.create type_id, config={}
+  def self.create strategy_id, config={}
     config.symbolize_keys!
     to = config.delete(:to)
-    raise ArgumentError, "type argument is required" if type_id.blank?
+    raise ArgumentError, "strategy argument is required" if strategy_id.blank?
 
     # Find the notification configuration.
-    type_definition = type_id.is_a?(NotificationType) ? NotificationType : notification_type(type_id)
-    raise ArgumentError, "could not find a notification definition for #{type_id}" unless type_definition
+    strategy_class = strategy_id.is_a?(Strategy) ? Strategy : strategy(strategy_id)
+    raise ArgumentError, "could not find a notification strategy for #{strategy_id}" unless strategy_class
 
     activity = config.delete :activity
 
@@ -101,10 +102,10 @@ module Notify
     end
 
     # Flatten the rules and hold them in a ruleset.
-    ruleset = global_config.merge(type_definition.ruleset).merge(config)
+    ruleset = global_strategy.merge(strategy_class.ruleset).merge(config)
 
     # Create the notification
-    notification = Notification.create! type: type_definition.id, ruleset: ruleset, activity: activity
+    notification = Notification.create! strategy: strategy_class.id, ruleset: ruleset, activity: activity
 
     # Create the deliveries
     CreateDeliveries.new.call(notification: notification, to: to)
@@ -115,7 +116,7 @@ module Notify
     notification
   end
 
-  def self.global_config
+  def self.global_strategy
     # TODO: make this customizeable
     Ruleset.new deliver_via: [], visible: true, mailer: :notifications
   end

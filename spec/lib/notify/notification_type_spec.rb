@@ -1,10 +1,10 @@
 require 'spec_helper'
 
 module Notify
-  describe NotificationType do
-    let(:config) { NotificationType.new }
+  describe Strategy do
+    let(:config) { Strategy.new }
 
-    subject { class ::FooNotification; extend NotificationType; end }
+    subject { class ::FooNotification; extend Strategy; end }
     after { Object.send(:remove_const, :FooNotification) if Object.constants.include?(:FooNotification) }
 
     describe 'validation' do
@@ -27,7 +27,7 @@ module Notify
       end
 
       it 'includes all items in RULE_ATTRIBUTES in the ruleset' do
-        NotificationType::RULE_ATTRIBUTES.each do |rule|
+        Strategy::RULE_ATTRIBUTES.each do |rule|
           subject.send("#{rule}=", 'foo')
           expect(subject.ruleset[rule]).to eq 'foo'
         end

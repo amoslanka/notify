@@ -1,11 +1,10 @@
 class Notification < ActiveRecord::Base
   RULESET_ATTRIBUTES = %w(deliver_via visible policy)
-  self.inheritance_column = :_disabled
 
   has_many :deliveries
   belongs_to :activity, polymorphic: true
 
-  validates_presence_of :type
+  validates_presence_of :strategy
 
   attr_accessor :ruleset
 

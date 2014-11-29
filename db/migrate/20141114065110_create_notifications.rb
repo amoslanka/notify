@@ -1,7 +1,7 @@
 class CreateNotifications < ActiveRecord::Migration
   def change
     create_table :notifications do |t|
-      t.string :type, required: true
+      t.string :strategy, required: true
       t.references :activity, polymorphic: true
       # Rules
       t.string :deliver_via
@@ -11,7 +11,7 @@ class CreateNotifications < ActiveRecord::Migration
       t.timestamps
     end
 
-    add_index :notifications, :type
+    add_index :notifications, :strategy
     add_index :notifications, :visible
     add_index :notifications, :expires_at
     add_index :notifications, [:visible, :expires_at]
