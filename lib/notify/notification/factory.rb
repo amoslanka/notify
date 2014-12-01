@@ -17,7 +17,7 @@ module Notify
       # Create a notification. Creates the message record and delivery records.
       #
       # Returns an instance of the notification.
-      def create(receivers, config=[])
+      def create(receivers, config={})
         activity = config.delete :activity
 
         unless activity.nil? || activity.is_a?(ActiveRecord::Base)
@@ -28,7 +28,7 @@ module Notify
         strategy = self.notification_class.strategy(config)
 
         # Create the message
-        message = Message.create! notification: self.notification_class.id,
+        message = Message.create! notification_name: self.notification_class.id,
           strategy: strategy,
           activity: activity
 

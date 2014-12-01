@@ -39,7 +39,7 @@ module Notify
     # method, so behavior should follow suite. Only official STRATEGY_ATTRIBUTES
     # attributes will be passed on and assigned.
     def strategy=val
-      self.attributes = val.to_hash.slice(*STRATEGY_ATTRIBUTES)
+      self.attributes = val.to_h.slice(*STRATEGY_ATTRIBUTES)
     end
 
   end
