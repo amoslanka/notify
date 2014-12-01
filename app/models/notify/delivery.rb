@@ -9,6 +9,9 @@ module Notify
 
     validates_presence_of :receiver
 
+    delegate :notification, to: :message
+    delegate :strategy, to: :message
+
     # Public. Call when the message is delivered. This
     # method will save the record and return the instance.
     def mark_as_delivered!

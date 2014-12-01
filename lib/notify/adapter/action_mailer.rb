@@ -1,5 +1,6 @@
-module Notify::Adapter
+require 'action_mailer'
 
+module Notify::Adapter
   #
   # Platform options
   #   - mailer - The name or class of the mailer to use. If a name is provided, only
@@ -14,27 +15,28 @@ module Notify::Adapter
     # TODO: switch service adapters to receive the user and the notification
     # (or a presenter) instead of the delivery object.
 
-    def deliver(delivery, options={})
-      options.symbolize_keys!
+    def deliver(delivery, strategy)
 
       # TODO: move parsing out the mailer to the Strategy object.
       # This will give us the ability to stay out of the notif object during
       # adaptation, and allow us to raise an error early on if the mailer
       # doesn't exist.
 
+      # require 'pry'; binding.pry
+
       method_name = nil
-      mailer = case options[:mailer]
-      when Class then options[:mailer]
+      mailer = case strategy.mailer
+      when Class then strategy.mailer
       when String, Symbol
-        segments = options[:mailer].to_s.split("#")
+        segments = strategy.mailer.to_s.split("#")
         method_name = segments[1]
         mailer_class(segments[0])
       else
-        raise AdapterError, "#{options[:mailer]} is not a valid mailer"
+        raise AdapterError, "#{strategy.mailer} is not a valid mailer"
       end
 
-      method_name ||= delivery.notification.strategy
-      mail = mailer.send method_name, delivery.receiver, delivery.notification
+      method_name ||= delivery.notification.id
+      mail = mailer.send method_name, delivery.receiver, delivery.message
 
       mail.deliver!
     end

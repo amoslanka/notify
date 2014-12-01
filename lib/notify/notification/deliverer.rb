@@ -48,7 +48,7 @@ module Notify
 
           adapters.each do |adapter_name, adapter|
             begin
-              adapter.deliver delivery, ruleset.to_h
+              adapter.deliver delivery, strategy
             rescue StandardError => e
 
               # TODO: Problem: this rescue will hide any errors. Perhaps
