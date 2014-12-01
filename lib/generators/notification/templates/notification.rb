@@ -19,7 +19,7 @@
 # notification delivery configuration.
 #
 class <%= notification_name.classify %>Notification
-  extend Notify::Strategy
+  extend Notify::Notification
 
   # The delivery platforms this notification should use. The fallback
   # will be the default list of all platforms.

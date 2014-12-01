@@ -3,18 +3,18 @@ require 'spec_helper'
 module Notify
   describe Notify do
 
-    describe '.strategy' do
+    describe '.notification' do
       it 'safely finds a notification class' do
-        class ::FooNotification; extend Notify::Strategy; end;
-        expect(Notify.strategy(:foo)).to eq FooNotification
-        expect(Notify.strategy(:bar)).to be_nil
+        class ::FooNotification; extend Notify::Notification; end;
+        expect(Notify.notification(:foo)).to eq FooNotification
+        expect(Notify.notification(:bar)).to be_nil
       end
 
       it 'finds a notification class when the name is nested' do
         module ::Foo
-          class BarNotification; extend Notify::Strategy; end;
+          class BarNotification; extend Notify::Notification; end;
         end
-        expect(Notify.strategy('foo/bar')).to eq ::Foo::BarNotification
+        expect(Notify.notification('foo/bar')).to eq ::Foo::BarNotification
       end
 
       after do
@@ -49,7 +49,7 @@ module Notify
     end
 
     describe '.create' do
-      let!(:clazz) { class ::FooNotification; extend Notify::Strategy; ;end }
+      let!(:clazz) { class ::FooNotification; extend Notify::Notification; ;end }
       after do
         # Remove the fake notifications we created.
         Object.send(:remove_const, :FooNotification) if Object.constants.include?(:FooNotification)

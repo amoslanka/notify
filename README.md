@@ -73,7 +73,7 @@ This creates a notification definition in `app/notifications` using the same nam
 # app/notifications/foo_notification.rb
 
 class WelcomeNotification
-  extend Notify::Strategy
+  extend Notify::Notification
 
   self.deliver_via = :action_mailer
   self.visible = true
