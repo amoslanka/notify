@@ -3,6 +3,27 @@ require 'spec_helper'
 module Notify
   describe Notify do
 
+    describe '.strategy' do
+      subject{ Notify.strategy }
+
+      it 'is instantiated by default' do
+        expect(subject).to be_a_kind_of Strategy
+      end
+
+      it 'defaults deliver_via' do
+        expect(Array(subject.deliver_via)).to eq [:action_mailer]
+      end
+
+      it 'defaults visible' do
+        expect(subject.visible).to eq true
+      end
+
+      it 'defaults mailer' do
+        expect(subject.mailer).to eq :notifications
+      end
+
+    end
+
     describe '.notification' do
       it 'safely finds a notification class' do
         class ::FooNotification; extend Notify::Notification; end;
