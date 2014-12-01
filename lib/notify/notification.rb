@@ -22,9 +22,6 @@ module Notify
     end
     def self.extended(obj)
       obj.class_eval do
-
-        puts 'happening?'
-
         class <<self
           # Make all the rule attributes into cvars.
           attr_accessor *Strategy::RULES

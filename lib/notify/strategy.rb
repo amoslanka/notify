@@ -6,6 +6,8 @@ module Notify
     RULES = %w(deliver_via mailer visible)
 
     # Create a strategy from a notification class or notification instance.
+    # Merges global strategy with the notification's rules and the rules passed
+    # in.
     def self.from_notification(notification, rules={})
       notification_rules = RULES.collect{ |r| [r, notification.send(r)] }.to_h
       Notify.strategy.merge(notification_rules).merge(rules)
