@@ -18,11 +18,11 @@ module Notify
 
         raise ArgumentError, 'A message is required' if message.blank?
 
-        if message.deliver_via.empty?
+        if strategy.deliver_via.empty?
           raise AdapterError, "The given message has no delivery platforms"
         end
 
-        adapters = message.deliver_via.collect do |name|
+        adapters = strategy.deliver_via.collect do |name|
           unless adapter_class = Notify.adapter(name)
             raise AdapterError, "Could not find a platform adapter for #{name}"
           end

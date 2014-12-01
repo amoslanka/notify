@@ -18,9 +18,18 @@ module Notify
     def self.extended(obj)
       obj.class_eval do
         include InstanceMethods
+
         class <<self
-          # Make all the rule attributes into cvars.
+          # Make all the rule attributes into cvars. Retrieving or setting strategy
+          # rules on the class is the way to define the strategy for this
+          # notification type.
           attr_accessor *Strategy::RULES
+        end
+
+        # Make all rule attributes into getters. Getting from the instance Strategy
+        # will be retrieving the rule after all rule flattening has occured.
+        Strategy::RULES.each do |rule|
+          delegate rule, to: :strategy
         end
       end
     end
