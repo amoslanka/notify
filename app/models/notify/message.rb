@@ -1,3 +1,5 @@
+require 'active_record'
+
 module Notify
   class Message < ActiveRecord::Base
     self.table_name = 'notify_messages'

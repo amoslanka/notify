@@ -1,3 +1,5 @@
+require 'active_record'
+
 module Notify
   class Delivery < ActiveRecord::Base
     self.table_name = 'notify_deliveries'
