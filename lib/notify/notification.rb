@@ -13,7 +13,6 @@ module Notify
 
     autoload :Deliverer, 'notify/notification/deliverer'
     autoload :Factory,   'notify/notification/factory'
-    autoload :Renderer, 'notify/notification/renderer'
 
     def self.extended(obj)
       obj.class_eval do
