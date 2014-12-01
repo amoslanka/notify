@@ -7,6 +7,7 @@ module Notify
     # the notification on behalf of the notification.
     #
     class Factory
+      attr_reader :notification_class
 
       def initialize(notification_class)
         @notification_class = notification_class
@@ -23,12 +24,12 @@ module Notify
           raise ArgumentError, "activity must be an ActiveRecord object"
         end
 
-        # Flatten the rules and hold them in a ruleset.
-        ruleset = Notify.global_strategy.merge(self.notification_class.ruleset).merge(config)
+        # Flatten the rules and hold them in a strategy object.
+        strategy = self.notification_class.strategy(config)
 
         # Create the message
         message = Message.create! notification: self.notification_class.id,
-          ruleset: ruleset,
+          strategy: strategy,
           activity: activity
 
         # Create the deliveries
@@ -37,8 +38,8 @@ module Notify
         self.notification_class.new message
       end
 
-      alias_method :send_to,    :build
-      alias_method :create_for, :build
+      alias_method :send_to,    :create
+      alias_method :create_for, :create
 
       # Create the deliveries that join the message to each receiver.
       #

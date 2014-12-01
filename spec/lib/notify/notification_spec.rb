@@ -1,60 +1,108 @@
 require 'spec_helper'
 
 module Notify
-  describe Notification
+  describe Notification do
+    let(:notification_class) { class FooNotification; extend Notification; end }
+    after { Notify.send(:remove_const, :FooNotification) if Notify.constants.include?(:FooNotification) }
 
-    # describe '.create' do
-    #   let!(:clazz) { class ::FooNotification; extend Notify::Notification; ;end }
-    #   after do
-    #     # Remove the fake notifications we created.
-    #     Object.send(:remove_const, :FooNotification) if Object.constants.include?(:FooNotification)
-    #   end
+    describe 'class methods' do
+      subject { notification_class }
 
-    #   let(:receivers) { FactoryGirl.create_list :receiver, 1 }
-    #   subject{ Notify.create :foo, to: receivers }
+      describe '.id' do
+        it 'returns the class name with "Notification" removed' do
+          expect(subject.id.to_sym).to eq :foo
+        end
+      end
 
-    #   it 'requires a to param' do
-    #     expect{ Notify.create :foo }.to raise_error
-    #   end
+      describe '.strategy' do
+        it 'uses Strategy.from_notification' do
+          expect(Strategy).to receive(:from_notification)
+          subject.strategy
+        end
+      end
 
-    #   it 'requires the activity to be an ActiveRecord model if present' do
-    #     expect{ Notify.create :foo, to: receivers, activity: "foo" }.
-    #       to raise_error ArgumentError, "activity must be an ActiveRecord object"
-    #   end
+      describe '.factory' do
+        it 'defaults to a Notification::Factory instance' do
+          subject.factory = nil
+          expect(subject.factory).to be_a_kind_of Notification::Factory
+          expect(subject.factory.notification_class).to eq subject
+        end
 
-    #   it 'creates a notification' do
-    #     allow_any_instance_of(ExecuteDeliveries).to receive(:call).and_return true
-    #     expect{ subject }.to change(Message, :count).by 1
-    #   end
+        it 'returns the factory object' do
+          fake = double()
+          subject.factory = fake
+          expect(subject.factory).to eq fake
+        end
+      end
 
-    #   describe 'the created notification' do
-    #     before { allow_any_instance_of(ExecuteDeliveries).to receive(:call).and_return true }
+      describe '.deliverer' do
+        it 'defaults to the Notification::Deliverer class' do
+          subject.deliverer = nil
+          expect(subject.deliverer).to eq Notification::Deliverer
+        end
 
-    #     it 'is returned' do
-    #       expect(subject).to be_a_kind_of Message
-    #     end
+        it 'returns the deliverer object' do
+          fake = double()
+          subject.deliverer = fake
+          expect(subject.deliverer).to eq fake
+        end
+      end
 
-    #     it 'is persisted' do
-    #       expect(subject.persisted?).to be_truthy
-    #     end
-    #   end
+      describe '.create' do
+        let(:options) { {} }
+        subject { notification_class.create [double()], options }
 
-    #   it 'creates deliveries for each receiver' do
-    #     allow_any_instance_of(ExecuteDeliveries).to receive(:call).and_return true
+        it 'creates a notification using the factory' do
+          allow(notification_class).to receive :deliver
+          expect(notification_class.factory).to receive(:create).and_call_original
+          subject
+        end
 
-    #     receivers.push *FactoryGirl.create_list(:receiver, 2)
-    #     expect(receivers.count).to eq 3
-    #     expect{ Notify.create :foo, to: receivers }.
-    #       to change(Notify::Delivery, :count).by 3
-    #   end
+        it 'delivers the notification using the deliverer' do
+          notification = double
+          allow(notification_class.factory).to receive(:create).and_return notification
+          expect(notification).to receive :deliver
+          subject
+        end
 
-    #   it 'runs deliveries' do
-    #     expect_any_instance_of(ExecuteDeliveries).to receive(:call).and_return true
-    #     Notify.create :foo, to: receivers
-    #   end
-    # end
+        context 'with deliver=false' do
+          let(:options) { { deliver: false } }
 
+          it 'does not deliver the notificiation' do
+            notification = double
+            allow(notification_class.factory).to receive(:create).and_return notification
+            expect(notification).to_not receive :deliver
+            subject
+          end
+        end
+      end
+    end
 
+    describe 'instance methods' do
+      let(:message) { double }
+      subject { notification_class.new(message) }
+
+      describe '#deliver' do
+        it 'calls call on the notification class deliverer' do
+          allow(notification_class).to receive(:deliverer).and_return double
+          expect(notification_class.deliverer).to receive :call
+          subject.deliver
+        end
+
+        context 'with a provided delegate argument' do
+          it 'calls call on the delegate' do
+            delegate = double
+            expect(delegate).to receive :call
+            subject.deliver(delegate)
+          end
+        end
+      end
+
+      it 'delegates #strategy to the message' do
+        expect(message).to receive :strategy
+        subject.strategy
+      end
+    end
 
   end
 end

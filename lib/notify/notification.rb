@@ -15,13 +15,9 @@ module Notify
     autoload :Factory,   'notify/notification/factory'
     autoload :Renderer, 'notify/notification/renderer'
 
-    def self.included(obj)
-      obj.class_eval do
-        include InstanceMethods
-      end
-    end
     def self.extended(obj)
       obj.class_eval do
+        include InstanceMethods
         class <<self
           # Make all the rule attributes into cvars.
           attr_accessor *Strategy::RULES
