@@ -35,6 +35,7 @@ The above features are all configurable options when declaring or sending your n
 
 Some keys to understanding what Notify does:
 
+- A notification is any established or patterned message your app code sends to any kind of receiver, but most typically, your users.
 - Declaring a notification means creating a configuration that will be used whenever you later send a notification of this type.
 - Notification declarations are stored in your `app/notifications` directory.
 - Creating a notification means instantiating a notification that will be delivered to one or many receivers.
