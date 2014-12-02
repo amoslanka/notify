@@ -21,7 +21,7 @@ module Notify
     # collectively represent this message. If no instance has been assigned, it
     # will instantiate one after finding it from Notify.
     def notification
-      @notification ||= Notify.notification(self.notification).new(self)
+      @notification ||= Notify.notification(self.notification_name).new(self)
     end
 
     def notification=(val)
@@ -31,7 +31,7 @@ module Notify
     # Compile the strategy attributes as a strategy object. Persisted attributes
     # are the highest priority values in a tier of rules to merge.
     def strategy
-      attribs = STRATEGY_ATTRIBUTES.collect{ |r| [r, self.send(r)] }.to_hash
+      attribs = STRATEGY_ATTRIBUTES.collect{ |r| [r, self.send(r)] }.to_h
       notification.class.strategy attribs
     end
 
@@ -39,7 +39,7 @@ module Notify
     # method, so behavior should follow suite. Only official STRATEGY_ATTRIBUTES
     # attributes will be passed on and assigned.
     def strategy=val
-      self.attributes = val.to_h.slice(*STRATEGY_ATTRIBUTES)
+      self.attributes = val.to_h.stringify_keys.slice(*STRATEGY_ATTRIBUTES)
     end
 
   end
