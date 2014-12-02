@@ -54,7 +54,7 @@ module Notify
 
         it 'creates a notification using the factory' do
           allow(notification_class).to receive :deliver
-          expect(notification_class.factory).to receive(:create).and_call_original
+          expect(notification_class.factory).to receive(:create).and_return double(deliver: nil)
           subject
         end
 
