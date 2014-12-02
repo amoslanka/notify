@@ -74,20 +74,23 @@ module Notify
     #
     # Create a notification and deliver it to the specified receivers. This method
     # is the central access point to sending a notification of this class. Three
-    # layers of rulesets are merged together here to finalize the ruleset to be used
-    # for the created message and deliveries, in order of highest priority: immediate
-    # strategy defined in the call to create, the strategy configurations specified
-    # in the extended class, and finally, the global default strategy.
+    # layers of rulesets are merged together to finalize the ruleset to be used
+    # for the created message and deliveries, in order of highest priority:
+    # immediate strategy defined in the call to create, the strategy
+    # configurations specified in the extended class, and finally, the global
+    # default strategy.
     #
-    # Options:
+    # Arguments:
     #
-    # [to]        A list of receivers. Most efficient if passed as an ActiveRecord::Relation.
-    #             Prefer to send a large list of receivers using a query instead of a
-    #             loaded list. For example, send as `User.all` instead of `User.all.to_a`
-    #             (Rails 4 returns a relation for the `all` method).
-    # [activity]  The object that represents what this notification is about. If you send
-    #             out notifications for announcements, store them in an announcements table
-    #             and pass the announcement instance as the activity.
+    # [receivers] A list of receiver objects. Most efficient if passed as an
+    #             ActiveRecord::Relation. Prefer to send a large list of receivers
+    #             using a query instead of a loaded list. For example, send as
+    #             `User.all` instead of `User.all.to_a` (Rails 4 returns a
+    #             relation for the `all` method).
+    # [activity]  The object that represents what this notification is about. If
+    #             you send out notifications for announcements, store them in an
+    #             announcements table and pass the announcement instance as the
+    #             activity.
     #
     # Ruleset options:
     #
