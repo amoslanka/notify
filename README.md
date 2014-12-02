@@ -35,6 +35,7 @@ The above features are all configurable options when declaring or sending your n
 
 Some keys to understanding what Notify does:
 
+- A notification is any established or patterned message your app code sends to any kind of receiver, but most typically, your users.
 - A notification strategy, or often just referred to as a notification, is creating a blueprint for messages that you will send out. The strategy refers to the set of rules and configurations that will be applied to the message, unless they are overridden when created.
 - Notification strategies are stored in your `app/notifications` directory.
 - Creating a notification means specifying a strategy and configurations to use, and letting Notify create the models it uses to connect your receivers with the message.
