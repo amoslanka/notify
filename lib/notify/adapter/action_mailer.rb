@@ -33,7 +33,7 @@ module Notify::Adapter
         raise AdapterError, "#{strategy.mailer} is not a valid mailer"
       end
 
-      method_name ||= delivery.notification.id
+      method_name ||= delivery.notification.class.id
       mail = mailer.send method_name, delivery.receiver, delivery.message
 
       mail.deliver!
