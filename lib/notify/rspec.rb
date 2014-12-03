@@ -44,6 +44,8 @@ module Notify
 
           message_ids = Message.pluck(:id)
 
+          block_to_test.call
+
           unless Message.count > message_ids.size
             @errors << "A Notify::Message was not created."
             return false
@@ -86,6 +88,7 @@ module Notify
           # rescue ::RSpec::Mocks::MockExpectationError => e
           #   require 'pry'; binding.pry
           # end
+          true
         end
 
         def description

@@ -22,8 +22,6 @@ module Notify::Adapter
       # adaptation, and allow us to raise an error early on if the mailer
       # doesn't exist.
 
-      # require 'pry'; binding.pry
-
       method_name = nil
       mailer = case strategy.mailer
       when Class then strategy.mailer
