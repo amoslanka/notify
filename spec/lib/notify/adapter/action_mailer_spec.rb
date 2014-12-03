@@ -15,14 +15,14 @@ module Notify::Adapter
 
       let(:delivery)     { double :delivery, receiver: receiver, message: message, strategy: strategy, notification: notification }
       let(:receiver)     { double :receiver }
-      let(:notification) { double :notification, id: :foo, strategy: strategy }
+      let(:notification) { double :notification, strategy: strategy, class: double(id: :foo) }
       let(:strategy)     { double :strategy, mailer: :foo }
       let(:message)      { double :message, notification: notification, receivers: [receiver] }
       subject{ ActionMailer.new.deliver delivery, strategy }
 
       it 'sends the message to a mailer' do
         mail = double deliver!: true
-        expect(mailer_class).to receive(notification.id).with(receiver, message).and_return(mail)
+        expect(mailer_class).to receive(notification.class.id).with(receiver, message).and_return(mail)
         subject
       end
 
