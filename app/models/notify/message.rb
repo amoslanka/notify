@@ -10,7 +10,7 @@ module Notify
 
     validates_presence_of :notification_name
 
-    serialize :deliver_via, Array
+    serialize :deliver_via, JSON
 
     def deliver_via=(val)
       write_attribute :deliver_via, Array(val)
