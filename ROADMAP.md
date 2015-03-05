@@ -17,7 +17,7 @@ _Not yet assigned to a release target, but ordered according to current priority
 
 **Retries**. Retry failed deliveries x times before giving up.
 
-**Policies**. A policy document with a single method that further defines delivery rules or modes for a specific user. Useful for translating user preferences into Notify behaviors, such as if a user preference states they wish to not receive any notifications. In such a case, the notification and delivery are still created, but not passed on to the translator.
+**Policies**. A policy document with a single method that further defines delivery rules or modes for a specific user. Useful for adapting user preferences into Notify behaviors, such as if a user preference states they wish to not receive any notifications. In such a case, the notification and delivery are still created, but not passed on to service adapters.
 
 **Bundled delivery**. Bundle multiple notifications into a single delivery, configurable per delivery platform.
 
@@ -31,7 +31,7 @@ _Not yet assigned to a release target, but ordered according to current priority
 
 **Send notifications to anything**. Set a notification receiver as anything, including non ActiveRecord objects. For example, if I wanted to send a notification out on a pubsub channel I would set the channel name as the receiver.
 
-**Define translators quicker**. Perhaps change translators to use a different approach, but likely just add a helper method that creates the class in memory for you. Something like `Notify.define_translator :foo do #...`
+**Define adapters quicker**. Perhaps change adapters to use a different approach, but likely just add a helper method that creates the class in memory for you. Something like `Notify.define_adapter :foo do #...`
 
 **Generate Notify**. Add a generator that generates the necessities for running Notify. Initializer, receiver inclusion, etc. Could also add the option to generate the migrations in the app's migrations folder instead of the engine's.
 
@@ -39,6 +39,6 @@ _Not yet assigned to a release target, but ordered according to current priority
 
 v0.0.1
 
-- Notification and delivery models, translators.
-- Generators for notification and translator.
+- Notification and delivery models, adapters.
+- Generators for notification and adapter.
 

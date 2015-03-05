@@ -4,18 +4,22 @@
 #
 #   user.notify "<%= notification_name %>"
 #
+# or
+#
+#   <%= notification_name.classify %>.send_for user
+#
 # A number of configurations are available to customize the definition of
 # this type of notification. All notifications that are created rely on
 # three tiers of configuration. Healthy global defaults are available which
 # you can customize yourself. But different notifications have different
 # behaviors and this is one of the main goals of Notify. The definition of
-# the notification in this class can be very specific two what is best for
-# rendering and delivering this type of notification. Finally, `user.notify`
+# the notification in this class can be very specific to what is best for
+# rendering and delivering this type of notification. Finally, the `user.notify`
 # method will override any definitions here, allowing for a final tier of
 # notification delivery configuration.
 #
 class <%= notification_name.classify %>Notification
-  extend Notify::NotificationType
+  extend Notify::Notification
 
   # The delivery platforms this notification should use. The fallback
   # will be the default list of all platforms.

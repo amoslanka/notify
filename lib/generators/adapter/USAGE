@@ -1,0 +1,8 @@
+Description:
+    Create a delivery platform adapter.
+
+Example:
+    rails generate adapter Thing
+
+    This will create:
+        lib/notify/adapter/thing.rb
