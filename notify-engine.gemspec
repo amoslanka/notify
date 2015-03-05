@@ -3,7 +3,7 @@ $:.push File.expand_path("../lib", __FILE__)
 require "notify/version"
 
 Gem::Specification.new do |s|
-  s.name        = "notify"
+  s.name        = "notify-engine"
   s.version     = Notify::VERSION
   s.authors     = ["Amos Lanka"]
   s.email       = ["amoslanka@gmail.com"]
