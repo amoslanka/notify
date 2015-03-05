@@ -41,6 +41,8 @@ module Notify
       alias_method :send_to,    :create
       alias_method :create_for, :create
 
+      private
+
       # Create the deliveries that join the message to each receiver.
       #
       # Options
@@ -49,7 +51,7 @@ module Notify
       #               efficient if passed as an ActiveRecord::Relation object.
       #
       # Any error raised while creating deliveries will be allowed to bubble up.
-      private def create_deliveries options={}
+      def create_deliveries options={}
         options.symbolize_keys!
         message = options.delete :message
         raise ArgumentError, 'A message is required' if message.blank?
@@ -92,7 +94,7 @@ module Notify
 
       # Private. Loops the items in the most efficient way depending on what
       # class items is, and yields the block with each.
-      private def each items, &block
+      def each items, &block
         if items.is_a?(::ActiveRecord::Relation)
           items.find_each do |item|
             block.yield item
