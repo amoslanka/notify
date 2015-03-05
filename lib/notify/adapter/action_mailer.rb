@@ -39,7 +39,9 @@ module Notify::Adapter
       mail.deliver!
     end
 
-    private def mailer_class(name)
+    private
+
+    def mailer_class(name)
       name = name.to_s.classify
       "#{name.classify}Mailer".safe_constantize ||
       "#{name.classify}".safe_constantize
