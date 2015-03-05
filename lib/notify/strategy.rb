@@ -9,7 +9,7 @@ module Notify
     # Merges global strategy with the notification's rules and the rules passed
     # in.
     def self.from_notification(notification, rules={})
-      notification_rules = RULES.collect{ |r| [r, notification.send(r)] }.to_h
+      notification_rules = Hash[RULES.collect{ |r| [r, notification.send(r)] }]
       Notify.strategy.merge(notification_rules).merge(rules)
     end
 

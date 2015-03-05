@@ -31,7 +31,7 @@ module Notify
     # Compile the strategy attributes as a strategy object. Persisted attributes
     # are the highest priority values in a tier of rules to merge.
     def strategy
-      attribs = STRATEGY_ATTRIBUTES.collect{ |r| [r, self.send(r)] }.to_h
+      attribs = Hash[STRATEGY_ATTRIBUTES.collect{ |r| [r, self.send(r)] }]
       notification.class.strategy attribs
     end
 
