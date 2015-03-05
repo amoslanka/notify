@@ -3,6 +3,16 @@ module Notify
     # A set of RSpec matchers to use with Notify.
     module Matchers
 
+      # Stubs notifications for the given instance.
+      def stub_notifications_for(instance)
+        allow(instance).to receive(:notify)
+      end
+
+      # Unstubs notifications for the given instance.
+      def unstub_notifications_for(instance)
+        allow(instance).to receive(:notify).and_call_original
+      end
+
       #
       # Matches that a notification was created.
       #
@@ -105,7 +115,6 @@ module Notify
         def failure_message_when_negated
           "Expected to not send a #{@name} notification"
         end
-
       end
     end
   end

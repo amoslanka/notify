@@ -33,6 +33,7 @@ module Notify
       end
     end
 
+    #
     # The identifier with which to refer to this notification. It is derived from
     # the name of the class.
     def id
@@ -48,6 +49,7 @@ module Notify
       Strategy.from_notification self, rules
     end
 
+    #
     # The factory delegate is given the work of creating a notification. It
     # flattens the strategies and creates the persisted records for the
     # message and deliveries.
