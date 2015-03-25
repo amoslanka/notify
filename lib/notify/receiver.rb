@@ -7,7 +7,7 @@ module Notify
 
     included do
       has_many :notify_deliveries, as: :receiver
-      has_many :notify_messages, through: :notify_deliveries
+      has_many :notify_messages, through: :notify_deliveries, source: :message
     end
 
     # Public. Create a notification for this user.
