@@ -13,6 +13,8 @@ module Notify
 
     # Scopes
 
+    scope :ordered, -> { order("delivered_at DESC, created_at DESC") }
+
     # Scopes that are based on Message strategy
     scope :visible, -> { joins(:message).where( "#{Notify::Message.table_name}" => { visible: true }) }
     scope :invisible, -> { joins(:message).where( "#{Notify::Message.table_name}" => { visible: false }) }
