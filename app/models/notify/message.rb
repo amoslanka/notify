@@ -8,7 +8,16 @@ module Notify
     has_many :deliveries, class_name: "Notify::Delivery", foreign_key: :notify_message_id
     belongs_to :activity, polymorphic: true
 
+    # Validations
+
     validates_presence_of :notification_name
+
+    # Scopes
+
+    scope :visible, -> { where visible: true }
+    scope :invisible, -> { where visible: false }
+
+    # Serializations
 
     serialize :deliver_via, JSON
 
