@@ -7,7 +7,15 @@ module Notify
     belongs_to :receiver, polymorphic: true
     belongs_to :message, class_name: Message.name, foreign_key: :notify_message_id
 
+    # Validations
+
     validates_presence_of :receiver
+
+    # Scopes
+
+    # Scopes that are based on Message strategy
+    scope :visible, -> { joins(:message).where( "#{Notify::Message.table_name}" => { visible: true }) }
+    scope :invisible, -> { joins(:message).where( "#{Notify::Message.table_name}" => { visible: false }) }
 
     delegate :notification, to: :message
     delegate :strategy, to: :message
