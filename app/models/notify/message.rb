@@ -5,7 +5,7 @@ module Notify
     self.table_name = 'notify_messages'
     STRATEGY_ATTRIBUTES = %w(deliver_via visible)
 
-    has_many :deliveries, class_name: Delivery.name, foreign_key: :notify_message_id
+    has_many :deliveries, class_name: "Notify::Delivery", foreign_key: :notify_message_id
     belongs_to :activity, polymorphic: true
 
     validates_presence_of :notification_name

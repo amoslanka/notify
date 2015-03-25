@@ -6,7 +6,7 @@ module Notify
     extend ActiveSupport::Concern
 
     included do
-      has_many :notify_deliveries, as: :receiver
+      has_many :notify_deliveries, as: :receiver, class_name: "Notify::Delivery"
       has_many :notify_messages, through: :notify_deliveries, source: :message
     end
 
