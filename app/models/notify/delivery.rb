@@ -33,7 +33,7 @@ module Notify
     # received by the receiver. This method will save the record
     # and return the instance.
     def mark_as_received!
-      self.update_attributes!(delivered_at: Time.zone.now)
+      self.update_attributes!(received_at: Time.zone.now)
       self
     end
 
