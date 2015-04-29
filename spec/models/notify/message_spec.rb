@@ -17,7 +17,7 @@ module Notify
     describe '#strategy=' do
       it 'assigns the values to attributes' do
         strategy = Strategy.new deliver_via: :foo
-        expect{ subject.strategy = strategy }.to change{ subject.deliver_via }.to [:foo]
+        expect{ subject.strategy = strategy }.to change{ subject.deliver_via }.to ["foo"]
       end
 
       it 'only assigns attributes named in STRATEGY_ATTRIBUTES' do
