@@ -16,13 +16,13 @@ module Notify::Adapter
     # (or a presenter) instead of the delivery object.
 
     def deliver(delivery, strategy)
-
       # TODO: move parsing out the mailer to the Strategy object.
       # This will give us the ability to stay out of the notif object during
       # adaptation, and allow us to raise an error early on if the mailer
       # doesn't exist.
 
       method_name = nil
+
       mailer = case strategy.mailer
       when Class then strategy.mailer
       when String, Symbol
@@ -34,7 +34,12 @@ module Notify::Adapter
       end
 
       method_name ||= delivery.notification.class.id
+
+      # TODO: check for the method name and raise error?
+
       mail = mailer.send method_name, delivery.receiver, delivery.message
+
+      # TODO: check for the deliver method and raise error?
 
       mail.deliver!
     end
@@ -42,9 +47,9 @@ module Notify::Adapter
     private
 
     def mailer_class(name)
-      name = name.to_s.classify
-      "#{name.classify}Mailer".safe_constantize ||
-      "#{name.classify}".safe_constantize
+      name = name.to_s.camelize
+      "#{name}Mailer".safe_constantize ||
+      "#{name}".safe_constantize
     end
   end
 end
